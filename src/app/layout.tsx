@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
+import { getAuthenticatedAppForUser } from "@/firebase/getAuthenticatedAppForUser";
+import Header from "@/components/Header";
+import { User } from "firebase/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -11,14 +14,19 @@ export const metadata: Metadata = {
   description: "An ecard creator and viewer",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { currentUser } = await getAuthenticatedAppForUser();
+
   return (
     <html lang="en">
-      <body className={dmSans.className}>{children}</body>
+      <body>
+        <Header initialUser={currentUser?.toJSON() as User} />
+        <main className={dmSans.className}>{children}</main>
+      </body>
     </html>
   );
 }
