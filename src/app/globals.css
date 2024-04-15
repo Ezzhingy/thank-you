@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --lightBlue: #b8daf3;
+  --brown: #5b3e27;
+
+  background-color: var(--lightBlue);
+  color: var(--brown);
+}
