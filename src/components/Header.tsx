@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, MouseEvent } from "react";
 import { signInWithGoogle, signOut, onAuthStateChanged } from "@/firebase/auth";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { User } from "firebase/auth";
 
 export const useUserSession = (initialUser: User) => {
@@ -38,6 +38,7 @@ interface IProps {
 const Header: React.FC<IProps> = ({ initialUser }) => {
   const user = useUserSession(initialUser);
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleSignOut = async (event: MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
@@ -62,6 +63,12 @@ const Header: React.FC<IProps> = ({ initialUser }) => {
     event.preventDefault();
     router.push("/home");
   };
+
+  useEffect(() => {
+    if (!user && pathname !== "/") {
+      router.push("/");
+    }
+  }, [pathname, router, user]);
 
   return (
     <header className="absolute right-5 top-5">
