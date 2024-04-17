@@ -15,7 +15,7 @@ export async function getAuthenticatedAppForUser(
   session?: string | null
 ): Promise<AuthenticatedAppResponse> {
   if (typeof window !== "undefined") {
-    console.log("client: ", firebaseApp);
+    // console.log("client: ", firebaseApp);
     return {
       app: firebaseApp,
       currentUser: firebaseAuth.currentUser?.toJSON() as User,
@@ -66,7 +66,7 @@ export async function getAuthenticatedAppForUser(
     await signInWithCustomToken(auth, customToken);
   }
 
-  console.log("server: ", app);
+  // console.log("server: ", app);
   return { app, currentUser: auth.currentUser };
 }
 

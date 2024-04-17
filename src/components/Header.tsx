@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, MouseEvent } from "react";
 import { signInWithGoogle, signOut, onAuthStateChanged } from "@/firebase/auth";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { User } from "firebase/auth";
 
 export const useUserSession = (initialUser: User) => {
@@ -58,16 +58,30 @@ const Header: React.FC<IProps> = ({ initialUser }) => {
     }
   };
 
+  const redirectHome = (event: MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    router.push("/home");
+  };
+
   return (
     <header className="absolute right-5 top-5">
       {user ? (
-        <a
-          href="#"
-          onClick={handleSignOut}
-          className="text-2xl border-2 border-brown p-2 transition-colors hover:bg-brown hover:text-lightBlue"
-        >
-          Sign Out
-        </a>
+        <div className="flex gap-4">
+          <a
+            href="#"
+            onClick={redirectHome}
+            className="text-2xl border-2 border-brown p-2 transition-colors hover:bg-brown hover:text-lightBlue"
+          >
+            Home
+          </a>
+          <a
+            href="#"
+            onClick={handleSignOut}
+            className="text-2xl border-2 border-brown p-2 transition-colors hover:bg-brown hover:text-lightBlue"
+          >
+            Sign Out
+          </a>
+        </div>
       ) : (
         <a
           href="#"
