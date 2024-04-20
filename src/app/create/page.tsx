@@ -1,18 +1,23 @@
 "use client";
 
 import { useUserSession } from "@/components/Header";
-import { getCardInfo } from "@/firebase/firestore";
+import { getCardInfo, resetCreateCard, sendCard } from "@/firebase/firestore";
+import { Dialog } from "@headlessui/react";
 import { Spacer } from "@nextui-org/spacer";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 const Create: React.FC = () => {
-  const [cardCover, setCardCover] = useState<boolean>(false);
-  const [cardContent, setCardContent] = useState<boolean>(false);
-  const [email, setEmail] = useState<string>();
+  const [cardCover, setCardCover] = useState<string>("");
+  const [cardContent, setCardContent] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const user = useUserSession();
+  const router = useRouter();
 
   const updateEmail = (e: ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -28,8 +33,14 @@ const Create: React.FC = () => {
     } else if (!email) {
       alert("Please enter email");
     } else {
-      alert("Sending...");
+      sendCard(cardCover, cardContent, email);
+      resetCreateCard(user);
+      setIsOpen(true);
     }
+  };
+
+  const redirectHome = () => {
+    router.push("/home");
   };
 
   useEffect(() => {
@@ -91,6 +102,24 @@ const Create: React.FC = () => {
           </div>
         </form>
       </div>
+      <Dialog
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        className="absolute top-1/4 left-1/3 w-[30%] h-[30%] bg-lightBlue border-2 border-brown p-5 flex flex-col justify-center"
+      >
+        <Dialog.Panel className="flex flex-col gap-5">
+          <Dialog.Title className="text-3xl font-bold">Success!</Dialog.Title>
+          <Dialog.Description className="text-2xl">
+            Your card has been sent to {email}.
+          </Dialog.Description>
+          <button
+            onClick={redirectHome}
+            className="text-2xl text-orange font-bold border-2 border-orange p-2 transition-colors hover:bg-orange hover:text-lightBlue"
+          >
+            GO HOME
+          </button>
+        </Dialog.Panel>
+      </Dialog>
     </div>
   );
 };

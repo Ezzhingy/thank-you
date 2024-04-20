@@ -51,28 +51,58 @@ export const saveCard = async (
 
 export const getCardInfo = async (
   user: User,
-  setCardCover: Dispatch<SetStateAction<boolean>>,
-  setCardContent: Dispatch<SetStateAction<boolean>>
+  setCardCover: Dispatch<SetStateAction<string>>,
+  setCardContent: Dispatch<SetStateAction<string>>
 ) => {
   try {
     const createCardRef = doc(db, "create", user.uid);
     const createCardSnapshot = await getDoc(createCardRef);
     if (createCardSnapshot.exists()) {
-      if (
-        createCardSnapshot.data().cover &&
-        createCardSnapshot.data().content
-      ) {
-        setCardCover(true);
-        setCardContent(true);
-      } else if (createCardSnapshot.data().content) {
-        setCardContent(true);
-      } else if (createCardSnapshot.data().cover) {
-        setCardCover(true);
-      } else {
-        setCardCover(false);
-        setCardContent(false);
-      }
+      setCardCover(createCardSnapshot.data().cover);
+      setCardContent(createCardSnapshot.data().content);
     }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const sendCard = async (
+  cardCover: string,
+  cardContent: string,
+  email: string
+) => {
+  try {
+    const readCardRef = doc(db, "read", email);
+    const readCardSnapshot = await getDoc(readCardRef);
+    if (readCardSnapshot.exists()) {
+      const coverArr = readCardSnapshot.data().cover;
+      const contentArr = readCardSnapshot.data().content;
+      coverArr.push(cardCover);
+      contentArr.push(cardContent);
+      await updateDoc(readCardRef, {
+        cover: coverArr,
+        content: contentArr,
+        date: new Date(),
+      });
+    } else {
+      await setDoc(readCardRef, {
+        cover: [cardCover],
+        content: [cardContent],
+      });
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const resetCreateCard = async (user: User) => {
+  try {
+    const createCardRef = doc(db, "create", user.uid);
+    await updateDoc(createCardRef, {
+      cover: "",
+      content: "",
+      date: new Date(),
+    });
   } catch (error) {
     console.error(error);
   }
