@@ -13,9 +13,9 @@ const Home: React.FC = () => {
       >
         <Image
           src="/account-wrench.svg"
+          alt="account-card"
           width={255}
           height={255}
-          alt="account-card"
         />
         <h1 className="text-6xl">CREATE</h1>
       </Link>
@@ -25,9 +25,9 @@ const Home: React.FC = () => {
       >
         <Image
           src="/account-card.svg"
+          alt="account-card"
           width={255}
           height={255}
-          alt="account-card"
         />
         <h1 className="text-6xl text-orange">VIEW</h1>
       </Link>

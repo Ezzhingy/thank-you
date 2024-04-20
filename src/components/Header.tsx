@@ -4,8 +4,9 @@ import React, { useState, useEffect, MouseEvent } from "react";
 import { signInWithGoogle, signOut, onAuthStateChanged } from "@/firebase/auth";
 import { usePathname, useRouter } from "next/navigation";
 import { User } from "firebase/auth";
+import { saveUser } from "@/firebase/firestore";
 
-export const useUserSession = (initialUser: User) => {
+export const useUserSession = (initialUser?: User) => {
   const [user, setUser] = useState(initialUser);
   const router = useRouter();
 
@@ -29,7 +30,7 @@ export const useUserSession = (initialUser: User) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  return user;
+  return user!;
 };
 
 interface IProps {
@@ -69,6 +70,11 @@ const Header: React.FC<IProps> = ({ initialUser }) => {
       router.push("/");
     }
   }, [pathname, router, user]);
+
+  useEffect(() => {
+    if (!user) return;
+    saveUser(user);
+  }, [user]);
 
   return (
     <header className="absolute right-5 top-5">
