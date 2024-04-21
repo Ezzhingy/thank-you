@@ -49,7 +49,7 @@ export const saveCard = async (
   }
 };
 
-export const getCardInfo = async (
+export const getCreateCardInfo = async (
   user: User,
   setCardCover: Dispatch<SetStateAction<string>>,
   setCardContent: Dispatch<SetStateAction<string>>
@@ -69,25 +69,33 @@ export const getCardInfo = async (
 export const sendCard = async (
   cardCover: string,
   cardContent: string,
-  email: string
+  recipientEmail: string,
+  user: User
 ) => {
   try {
-    const readCardRef = doc(db, "read", email);
+    const readCardRef = doc(db, "read", recipientEmail);
     const readCardSnapshot = await getDoc(readCardRef);
     if (readCardSnapshot.exists()) {
       const coverArr = readCardSnapshot.data().cover;
       const contentArr = readCardSnapshot.data().content;
+      const dateArr = readCardSnapshot.data().date;
+      const senderNameArr = readCardSnapshot.data().senderName;
       coverArr.push(cardCover);
       contentArr.push(cardContent);
+      dateArr.push(new Date());
+      senderNameArr.push(user.displayName);
       await updateDoc(readCardRef, {
         cover: coverArr,
         content: contentArr,
-        date: new Date(),
+        date: dateArr,
+        senderName: senderNameArr,
       });
     } else {
       await setDoc(readCardRef, {
         cover: [cardCover],
         content: [cardContent],
+        date: [new Date()],
+        senderName: [user.displayName],
       });
     }
   } catch (error) {
@@ -101,8 +109,21 @@ export const resetCreateCard = async (user: User) => {
     await updateDoc(createCardRef, {
       cover: "",
       content: "",
-      date: new Date(),
     });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getReadCards = async (user: User) => {
+  if (!user.email) return;
+
+  try {
+    const readCardRef = doc(db, "read", user.email);
+    const readCardSnapshot = await getDoc(readCardRef);
+    if (readCardSnapshot.exists()) {
+      return readCardSnapshot.data();
+    }
   } catch (error) {
     console.error(error);
   }

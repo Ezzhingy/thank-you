@@ -1,7 +1,11 @@
 "use client";
 
 import { useUserSession } from "@/components/Header";
-import { getCardInfo, resetCreateCard, sendCard } from "@/firebase/firestore";
+import {
+  getCreateCardInfo,
+  resetCreateCard,
+  sendCard,
+} from "@/firebase/firestore";
 import { Dialog } from "@headlessui/react";
 import { Spacer } from "@nextui-org/spacer";
 import Image from "next/image";
@@ -33,7 +37,7 @@ const Create: React.FC = () => {
     } else if (!email) {
       alert("Please enter email");
     } else {
-      sendCard(cardCover, cardContent, email);
+      sendCard(cardCover, cardContent, email, user);
       resetCreateCard(user);
       setIsOpen(true);
     }
@@ -45,7 +49,7 @@ const Create: React.FC = () => {
 
   useEffect(() => {
     if (!user) return;
-    getCardInfo(user, setCardCover, setCardContent);
+    getCreateCardInfo(user, setCardCover, setCardContent);
   }, [user]);
 
   return (
