@@ -11,7 +11,7 @@ const dmSans = DM_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Thank You",
-  description: "An ecard creator and viewer",
+  description: "Sending much gratitude and appreciation, from me to you",
 };
 
 export default async function RootLayout({
