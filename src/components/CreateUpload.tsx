@@ -61,6 +61,7 @@ const CreateUpload: React.FC<IProps> = ({ isCover, router }) => {
           type="file"
           onChange={handleFileChange}
           required
+          accept="image/*"
           className="w-40 sm:w-60"
         />
         <button className="text-2xl text-orange font-bold border-2 border-orange p-2 transition-colors hover:bg-orange hover:text-lightBlue">
