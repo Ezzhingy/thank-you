@@ -131,11 +131,9 @@ export const resetCreateCard = async (user: User) => {
   }
 };
 
-export const getReadCards = async (user: User) => {
-  if (!user.email) return;
-
+export const getReadCards = async (uid: string) => {
   try {
-    const readCardRef = doc(db, "read", user.uid);
+    const readCardRef = doc(db, "read", uid);
     const readCardSnapshot = await getDoc(readCardRef);
     if (readCardSnapshot.exists()) {
       const readCardData = readCardSnapshot.data();

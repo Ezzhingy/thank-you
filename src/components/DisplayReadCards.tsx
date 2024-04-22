@@ -25,7 +25,12 @@ const DisplayReadCards: React.FC<IProps> = ({ allCards }) => {
   const searchParams = useSearchParams();
   const uid = searchParams.get("uid");
 
-  if (!allCards) return null;
+  if (!allCards)
+    return (
+      <div className="min-h-screen flex justify-center items-center text-2xl">
+        No cards yet!
+      </div>
+    );
 
   allCards.sort((a: TCard, b: TCard) => {
     return b.date.seconds - a.date.seconds;
