@@ -13,6 +13,8 @@ const ReadCard: React.FC = () => {
   const [cover, setCover] = useState<string>("");
   const [content, setContent] = useState<string>("");
 
+  const [isCoverFront, setIsCoverFront] = useState<boolean>(true);
+
   useEffect(() => {
     const fetchCard = async () => {
       const card = await getReadCardById(uid!, Number(id!));
@@ -23,31 +25,77 @@ const ReadCard: React.FC = () => {
     fetchCard();
   }, [id, uid]);
 
+  const toggleCoverFront = () => {
+    if (!isCoverFront) {
+      setIsCoverFront(true);
+    }
+  };
+
+  const toggleCoverBack = () => {
+    if (isCoverFront) {
+      setIsCoverFront(false);
+    }
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center gap-5 min-h-[99vh]">
-      <div className="flex">
+    <div className="flex items-end justify-center min-h-[96vh]">
+      <div>
         {cover ? (
           <Image
             src={cover}
             alt="cover"
             width={400}
             height={400}
-            className=""
+            onClick={toggleCoverFront}
+            className={`${
+              isCoverFront
+                ? "z-10 scale-110 translate-x-14"
+                : "z-1 scale-100 -translate-x-14 transition-transform transform-gpu ease-in-out hover:scale-105 hover:cursor-pointer"
+            } absolute top-[10%] left-[25%]`}
           />
         ) : null}
+
         {content ? (
           <Image
             src={content}
             alt="content"
             width={400}
             height={400}
-            className="-translate-x-40"
+            onClick={toggleCoverBack}
+            className={`${
+              !isCoverFront
+                ? "z-10 scale-110 -translate-x-14"
+                : "z-1 scale-100 translate-x-14 transition-transform transform-gpu ease-in-out hover:scale-105 hover:cursor-pointer"
+            } absolute top-[10%] left-[40%]`}
           />
         ) : null}
       </div>
-      <button className="text-2xl text-orange font-bold border-2 border-orange p-2 transition-colors hover:bg-orange hover:text-lightBlue">
-        DONE
-      </button>
+      <div className="flex">
+        <Image
+          src="/chevron-left.svg"
+          alt="chevron-left"
+          width={50}
+          height={50}
+          onClick={toggleCoverFront}
+          className={`${
+            isCoverFront
+              ? "cursor-default opacity-50"
+              : "cursor-pointer opacity-100"
+          }`}
+        />
+        <Image
+          src="/chevron-right.svg"
+          alt="chevron-right"
+          width={50}
+          height={50}
+          onClick={toggleCoverBack}
+          className={`${
+            !isCoverFront
+              ? "cursor-default opacity-50"
+              : "cursor-pointer opacity-100"
+          }`}
+        />
+      </div>
     </div>
   );
 };
