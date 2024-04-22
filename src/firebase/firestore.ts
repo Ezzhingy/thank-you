@@ -25,6 +25,7 @@ export const saveUser = async (user: User) => {
       await setDoc(doc(db, "create", user.uid), {
         cover: "",
         content: "",
+        count: 0,
       });
     }
   } catch (error) {
@@ -32,7 +33,7 @@ export const saveUser = async (user: User) => {
   }
 };
 
-export const saveCard = async (
+export const saveCreateCard = async (
   isCover: boolean,
   user: User,
   cardURL: string
@@ -66,38 +67,49 @@ export const getCreateCardInfo = async (
   }
 };
 
-export const sendCard = async (
+export const sendCreateCard = async (
   cardCover: string,
   cardContent: string,
   recipientEmail: string,
   user: User
 ) => {
   try {
-    const readCardRef = doc(db, "read", recipientEmail);
+    const usersSnapsshot = await getDocs(collection(db, "users"));
+    const allUsers = usersSnapsshot.docs.map((doc) => doc.data());
+    const recipient = allUsers.find((u) => u.email === recipientEmail);
+    if (!recipient) {
+      alert("Recipient email not found");
+      return false;
+    }
+    const recipientUID = recipient.uid;
+    const readCardRef = doc(db, "read", recipientUID);
     const readCardSnapshot = await getDoc(readCardRef);
     if (readCardSnapshot.exists()) {
-      const coverArr = readCardSnapshot.data().cover;
-      const contentArr = readCardSnapshot.data().content;
-      const dateArr = readCardSnapshot.data().date;
-      const senderNameArr = readCardSnapshot.data().senderName;
-      coverArr.push(cardCover);
-      contentArr.push(cardContent);
-      dateArr.push(new Date());
-      senderNameArr.push(user.displayName);
+      const cardsObjArr = readCardSnapshot.data();
+      cardsObjArr.cards.push({
+        cover: cardCover,
+        content: cardContent,
+        date: new Date(),
+        senderName: user.displayName,
+        count: cardsObjArr.cards.length,
+      });
       await updateDoc(readCardRef, {
-        cover: coverArr,
-        content: contentArr,
-        date: dateArr,
-        senderName: senderNameArr,
+        cards: cardsObjArr.cards,
       });
     } else {
       await setDoc(readCardRef, {
-        cover: [cardCover],
-        content: [cardContent],
-        date: [new Date()],
-        senderName: [user.displayName],
+        cards: [
+          {
+            cover: cardCover,
+            content: cardContent,
+            date: new Date(),
+            senderName: user.displayName,
+            count: 0,
+          },
+        ],
       });
     }
+    return true;
   } catch (error) {
     console.error(error);
   }
@@ -106,9 +118,13 @@ export const sendCard = async (
 export const resetCreateCard = async (user: User) => {
   try {
     const createCardRef = doc(db, "create", user.uid);
+    const createCardSnapshot = await getDoc(createCardRef);
+    const createCardData = createCardSnapshot.data();
+    const count = createCardData?.count;
     await updateDoc(createCardRef, {
       cover: "",
       content: "",
+      count: count + 1,
     });
   } catch (error) {
     console.error(error);
@@ -119,11 +135,36 @@ export const getReadCards = async (user: User) => {
   if (!user.email) return;
 
   try {
-    const readCardRef = doc(db, "read", user.email);
+    const readCardRef = doc(db, "read", user.uid);
     const readCardSnapshot = await getDoc(readCardRef);
     if (readCardSnapshot.exists()) {
-      return readCardSnapshot.data();
+      const readCardData = readCardSnapshot.data();
+      return readCardData;
     }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getReadCardById = async (uid: string, id: number) => {
+  try {
+    const readCardRef = doc(db, "read", uid);
+    const readCardSnapshot = await getDoc(readCardRef);
+    if (readCardSnapshot.exists()) {
+      const readCardData = readCardSnapshot.data();
+      return readCardData.cards[id];
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getCreateCardId = async (user: User) => {
+  try {
+    const createCardRef = doc(db, "create", user.uid);
+    const createCardSnapshot = await getDoc(createCardRef);
+    const createCardData = createCardSnapshot.data();
+    return createCardData?.count;
   } catch (error) {
     console.error(error);
   }

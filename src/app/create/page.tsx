@@ -4,7 +4,7 @@ import { useUserSession } from "@/components/Header";
 import {
   getCreateCardInfo,
   resetCreateCard,
-  sendCard,
+  sendCreateCard,
 } from "@/firebase/firestore";
 import { Dialog } from "@headlessui/react";
 import { Spacer } from "@nextui-org/spacer";
@@ -27,7 +27,7 @@ const Create: React.FC = () => {
     setEmail(e.target.value);
   };
 
-  const validateAndSend = (e: FormEvent<HTMLFormElement>) => {
+  const validateAndSend = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!cardCover) {
@@ -37,9 +37,10 @@ const Create: React.FC = () => {
     } else if (!email) {
       alert("Please enter email");
     } else {
-      sendCard(cardCover, cardContent, email, user);
-      resetCreateCard(user);
-      setIsOpen(true);
+      if (await sendCreateCard(cardCover, cardContent, email, user)) {
+        resetCreateCard(user);
+        setIsOpen(true);
+      }
     }
   };
 
@@ -106,24 +107,27 @@ const Create: React.FC = () => {
           </div>
         </form>
       </div>
-      <Dialog
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
-        className="absolute top-1/4 left-1/3 w-[30%] h-[30%] bg-lightBlue border-2 border-brown p-5 flex flex-col justify-center"
-      >
-        <Dialog.Panel className="flex flex-col gap-5">
-          <Dialog.Title className="text-3xl font-bold">Success!</Dialog.Title>
-          <Dialog.Description className="text-2xl">
-            Your card has been sent to {email}.
-          </Dialog.Description>
-          <button
-            onClick={redirectHome}
-            className="text-2xl text-orange font-bold border-2 border-orange p-2 transition-colors hover:bg-orange hover:text-lightBlue"
-          >
-            GO HOME
-          </button>
-        </Dialog.Panel>
-      </Dialog>
+      {isOpen ? (
+        <Dialog
+          static
+          open={isOpen}
+          onClose={() => null}
+          className="absolute top-1/4 left-1/3 w-[30%] h-[30%] bg-lightBlue border-2 border-brown p-5 flex flex-col justify-center"
+        >
+          <Dialog.Panel className="flex flex-col gap-5">
+            <Dialog.Title className="text-3xl font-bold">Success!</Dialog.Title>
+            <Dialog.Description className="text-2xl">
+              Your card has been sent to {email}.
+            </Dialog.Description>
+            <button
+              onClick={redirectHome}
+              className="text-2xl text-orange font-bold border-2 border-orange p-2 transition-colors hover:bg-orange hover:text-lightBlue"
+            >
+              GO HOME
+            </button>
+          </Dialog.Panel>
+        </Dialog>
+      ) : null}
     </div>
   );
 };

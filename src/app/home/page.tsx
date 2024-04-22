@@ -3,8 +3,12 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useUserSession } from "@/components/Header";
 
 const Home: React.FC = () => {
+  const user = useUserSession();
+  if (!user) return null;
+
   return (
     <div className="flex flex-col sm:flex-row justify-center items-center gap-8 min-h-[99vh]">
       <Link
@@ -21,7 +25,7 @@ const Home: React.FC = () => {
         <h1 className="text-6xl">CREATE</h1>
       </Link>
       <Link
-        href="/view"
+        href={{ pathname: "/view", query: { uid: user.uid } }}
         className="w-[80vw] sm:w-[30vw] sm:h-[50vh] border-2 border-orange p-20 flex flex-col justify-center items-center"
       >
         <Image

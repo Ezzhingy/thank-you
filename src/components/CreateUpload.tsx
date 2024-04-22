@@ -5,7 +5,7 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 import Image from "next/image";
 import React, { FormEvent, useState } from "react";
 import { useUserSession } from "@/components/Header";
-import { saveCard } from "@/firebase/firestore";
+import { getCreateCardId, saveCreateCard } from "@/firebase/firestore";
 
 interface IProps {
   isCover: boolean;
@@ -28,11 +28,12 @@ const CreateUpload: React.FC<IProps> = ({ isCover, router }) => {
     if (!user || !file) return;
 
     try {
+      const count = await getCreateCardId(user);
       const cardURL = await uploadCard(
-        `cards/${user.uid}/${isCover ? "cover" : "content"}`,
+        `cards/${user.uid}/${count}/${isCover ? "cover" : "content"}`,
         file
       );
-      await saveCard(isCover, user, cardURL!);
+      await saveCreateCard(isCover, user, cardURL!);
       router.push("/create");
     } catch (error) {
       console.error(error);

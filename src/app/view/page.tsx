@@ -9,10 +9,9 @@ export const dynamic = "force-dynamic";
 const View: React.FC = async () => {
   const { currentUser } = await getAuthenticatedAppForUser();
   const allCards = await getReadCards(currentUser?.toJSON() as User);
-
   return (
     <div>
-      <DisplayReadCards allCards={allCards} />
+      <DisplayReadCards allCards={allCards?.cards} />
     </div>
   );
 };
