@@ -54,9 +54,9 @@ const Create: React.FC = () => {
   }, [user]);
 
   return (
-    <div className="flex flex-col items-center justify-center gap-5 min-h-[99vh]">
-      <Link href="/create/cover" className="flex w-[70%]">
-        <div className="flex flex-1 items-center gap-2 border-2 border-brown p-5 text-3xl">
+    <div className="flex flex-col sm:items-center justify-center gap-5 p-2 sm:p-0 min-h-[99vh]">
+      <Link href="/create/cover" className="flex w-auto sm:w-[70%]">
+        <div className="flex flex-1 items-center gap-2 border-2 border-brown p-5 text-base sm:text-2xl md:text-3xl">
           <h1>Upload card cover</h1>
           {cardCover ? (
             <Image
@@ -67,12 +67,12 @@ const Create: React.FC = () => {
             />
           ) : null}
         </div>
-        <div className="border-y-2 border-r-2 border-brown p-5 text-3xl font-bold text-orange">
+        <div className="border-y-2 border-r-2 border-brown p-5 text-base sm:text-2xl md:text-3xl font-bold text-orange">
           Upload
         </div>
       </Link>
-      <Link href="/create/content" className="flex w-[70%]">
-        <div className="flex flex-1 items-center gap-2 border-2 border-brown p-5 text-3xl">
+      <Link href="/create/content" className="flex w-auto sm:w-[70%]">
+        <div className="flex flex-1 items-center gap-2 border-2 border-brown p-5 text-base sm:text-2xl md:text-3xl">
           <h1>Upload card content</h1>
           {cardContent ? (
             <Image
@@ -83,14 +83,14 @@ const Create: React.FC = () => {
             />
           ) : null}
         </div>
-        <div className="border-y-2 border-r-2 border-brown p-5 text-3xl font-bold text-orange">
+        <div className="border-y-2 border-r-2 border-brown p-5 text-base sm:text-2xl md:text-3xl font-bold text-orange">
           Upload
         </div>
       </Link>
       <Spacer y={48} />
-      <div className="w-[70%]">
+      <div className="w-auto sm:w-[70%]">
         <form onSubmit={validateAndSend}>
-          <label htmlFor="email" className="text-3xl">
+          <label htmlFor="email" className="text-base sm:text-2xl md:text-3xl">
             Send to:
           </label>
           <div className="flex">
@@ -99,9 +99,9 @@ const Create: React.FC = () => {
               placeholder="test@gmail.com"
               type="email"
               onChange={updateEmail}
-              className="flex flex-1 border-2 border-brown p-5 text-3xl bg-transparent"
+              className="flex flex-1 border-2 border-brown p-5 text-base sm:text-2xl md:text-3xl bg-transparent"
             />
-            <button className="border-y-2 border-r-2 border-brown p-5 text-3xl font-bold text-orange">
+            <button className="border-y-2 border-r-2 border-brown p-5 text-base sm:text-2xl md:text-3xl font-bold text-orange">
               Upload
             </button>
           </div>

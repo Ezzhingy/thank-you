@@ -83,14 +83,14 @@ const Header: React.FC<IProps> = ({ initialUser }) => {
           <a
             href="#"
             onClick={redirectHome}
-            className="text-2xl border-2 border-brown p-2 transition-colors hover:bg-brown hover:text-lightBlue"
+            className="text-xl sm:text-2xl border-2 border-brown p-2 transition-colors hover:bg-brown hover:text-lightBlue"
           >
             Home
           </a>
           <a
             href="#"
             onClick={handleSignOut}
-            className="text-2xl border-2 border-brown p-2 transition-colors hover:bg-brown hover:text-lightBlue"
+            className="text-xl sm:text-2xl border-2 border-brown p-2 transition-colors hover:bg-brown hover:text-lightBlue"
           >
             Sign Out
           </a>
@@ -99,7 +99,7 @@ const Header: React.FC<IProps> = ({ initialUser }) => {
         <a
           href="#"
           onClick={handleSignIn}
-          className="text-2xl border-2 border-brown p-2 transition-colors hover:bg-brown hover:text-lightBlue"
+          className="text-xl sm:text-2xl border-2 border-brown p-2 transition-colors hover:bg-brown hover:text-lightBlue"
         >
           Sign Up / Log in
         </a>

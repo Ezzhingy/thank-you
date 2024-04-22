@@ -32,7 +32,7 @@ const DisplayReadCards: React.FC<IProps> = ({ allCards }) => {
   });
 
   return (
-    <div className="flex flex-col gap-5 ml-20 mt-20">
+    <div className="flex flex-col gap-5 mx-10 md:ml-20 mt-20">
       {allCards.map((card: TCard, index: number) => {
         const date = new Date(card.date.seconds * 1000);
         const formattedDate = date.toLocaleDateString("en-US", {
@@ -43,16 +43,21 @@ const DisplayReadCards: React.FC<IProps> = ({ allCards }) => {
         return (
           <Link
             href={{ pathname: "/view/card", query: { uid, id: card.count } }}
-            className="flex w-[70%]"
+            className="flex md:w-[70%]"
             key={index}
           >
-            <div className="flex flex-1 items-center gap-2 border-2 border-brown p-5 text-3xl">
-              <h1>You&apos;ve received a card from {card.senderName}!</h1>
+            <div className="flex flex-1 items-center gap-2 border-2 border-brown p-5 text-base md:text-3xl">
+              <h1>
+                <span className="hidden sm:inline">
+                  You&apos;ve received a card from
+                </span>{" "}
+                {card.senderName}!
+              </h1>
             </div>
-            <div className="border-y-2 border-r-2 border-brown p-5 text-3xl">
+            <div className="border-y-2 border-r-2 border-brown p-5 text-base md:text-3xl">
               {formattedDate}
             </div>
-            <div className="border-y-2 border-r-2 border-brown p-5 text-3xl font-bold text-orange">
+            <div className="border-y-2 border-r-2 border-brown p-5 text-base md:text-3xl font-bold text-orange">
               View
             </div>
           </Link>
